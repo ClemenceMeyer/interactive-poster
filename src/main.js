@@ -8,6 +8,8 @@ gsap.registerPlugin(MotionPathPlugin)
 
 const orbitImgs = document.querySelectorAll(".orbit-img")
 
+const orbitRawPathHourglassTwin = MotionPathPlugin.getRawPath('#path-hourglass-twin')
+const orbitRawPathHourglassTwins = MotionPathPlugin.getRawPath('#path-hourglass-twins')
 const orbitRawPathBrittleHollow = MotionPathPlugin.getRawPath('#path-brittle-hollow')
 const orbitRawPathTimberHearth = MotionPathPlugin.getRawPath('#path-timber-hearth')
 const orbitRawPathGiantsDeep = MotionPathPlugin.getRawPath('#path-giants-deep')
@@ -15,6 +17,31 @@ const orbitRawPathGiantsDeep = MotionPathPlugin.getRawPath('#path-giants-deep')
 /************** orbit **************/
 
 const planetsAnimInfo = {
+  hourglassTwins: {
+    zIndex: [110, 50],
+    duration: 8,
+    minY: 289.89851,
+    midY: 318.375035,
+    maxY: 346.85156,
+    scaleModifier: [0.8, 1.4]
+  },
+  emberTwin: {
+    zIndex: [20, 10],
+    duration: 4,
+    minY: -35.83591,
+    midY: -24.445315,
+    maxY: -13.05472,
+    scaleModifier: [0.98, 1.04],
+    start: 0.5
+  },
+  ashTwin: {
+    zIndex: [20, 10],
+    duration: 4,
+    minY: -35.83591,
+    midY: -24.445315,
+    maxY: -13.05472,
+    scaleModifier: [0.98, 1.04]
+  },
   brittleHollow: {
     zIndex: [120, 40],
     duration: 10,
@@ -44,7 +71,10 @@ const planetsAnimInfo = {
 const planetsOrbitsPath = {
   brittleHollow: {raw: orbitRawPathBrittleHollow, path: '#path-brittle-hollow'},
   timberHearth: {raw: orbitRawPathTimberHearth, path: '#path-timber-hearth'},
-  giantsDeep: {raw: orbitRawPathGiantsDeep, path: '#path-giants-deep'}
+  giantsDeep: {raw: orbitRawPathGiantsDeep, path: '#path-giants-deep'},
+  hourglassTwins: {raw: orbitRawPathHourglassTwins, path: '#path-hourglass-twins'},
+  ashTwin: {raw: orbitRawPathHourglassTwin, path: '#path-hourglass-twin'},
+  emberTwin: {raw: orbitRawPathHourglassTwin, path: '#path-hourglass-twin'}
 }
 
 const scaleMod = function (scale, target) {
@@ -78,7 +108,8 @@ const createOrbitForImg = (img) => {
       motionPath: {
         path: planetsOrbitsPath[img.dataset.key].path,
         align: planetsOrbitsPath[img.dataset.key].path,
-        alignOrigin: [0.5, 0.5]
+        alignOrigin: [0.5, 0.5],
+        fromCurrent: true
       },
       zIndex: 1,
       modifiers: {
