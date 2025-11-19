@@ -13,13 +13,14 @@ const orbitRawPathHourglassTwins = MotionPathPlugin.getRawPath('#path-hourglass-
 const orbitRawPathBrittleHollow = MotionPathPlugin.getRawPath('#path-brittle-hollow')
 const orbitRawPathTimberHearth = MotionPathPlugin.getRawPath('#path-timber-hearth')
 const orbitRawPathGiantsDeep = MotionPathPlugin.getRawPath('#path-giants-deep')
+const orbitRawPathDarkBramble = MotionPathPlugin.getRawPath('#path-dark-bramble')
 
 /************** orbit **************/
 
 const planetsAnimInfo = {
   hourglassTwins: {
     zIndex: [110, 50],
-    duration: 8,
+    duration: 20,
     minY: 289.89851,
     midY: 318.375035,
     maxY: 346.85156,
@@ -44,7 +45,7 @@ const planetsAnimInfo = {
   },
   brittleHollow: {
     zIndex: [120, 40],
-    duration: 10,
+    duration: 30,
     minY: 185.15303,
     midY: 264.394565,
     maxY: 343.6361,
@@ -52,34 +53,53 @@ const planetsAnimInfo = {
   },
   timberHearth: {
     zIndex: [130, 30],
-    duration: 15,
+    duration: 38,
     minY: 163.55428,
     midY: 271.88205,
     maxY: 380.20982,
-    scaleModifier: [0.25, 4]
+    scaleModifier: [0.3, 4]
   },
   giantsDeep: {
     zIndex: [140, 20],
-    duration: 20,
-    minY: 174.31512,
-    midY: 288.22268,
-    maxY: 402.13024,
-    scaleModifier: [0.125, 8]
+    duration: 50,
+    minY: 139.76044,
+    midY: 225.19142499999998,
+    maxY: 310.62241,
+    scaleModifier: [0.2, 2]
+  },
+  darkBramble: {
+    zIndex: [150, 10],
+    duration: 70,
+    minY: 114.81513,
+    midY: 228.72269,
+    maxY: 342.63025,
+    scaleModifier: [0.1, 16]
   },
 }
 
 const planetsOrbitsPath = {
+  hourglassTwins: {raw: orbitRawPathHourglassTwins, path: '#path-hourglass-twins'},
+  ashTwin: {raw: orbitRawPathHourglassTwin, path: '#path-hourglass-twin'},
+  emberTwin: {raw: orbitRawPathHourglassTwin, path: '#path-hourglass-twin'},
   brittleHollow: {raw: orbitRawPathBrittleHollow, path: '#path-brittle-hollow'},
   timberHearth: {raw: orbitRawPathTimberHearth, path: '#path-timber-hearth'},
   giantsDeep: {raw: orbitRawPathGiantsDeep, path: '#path-giants-deep'},
-  hourglassTwins: {raw: orbitRawPathHourglassTwins, path: '#path-hourglass-twins'},
-  ashTwin: {raw: orbitRawPathHourglassTwin, path: '#path-hourglass-twin'},
-  emberTwin: {raw: orbitRawPathHourglassTwin, path: '#path-hourglass-twin'}
+  darkBramble: {raw: orbitRawPathDarkBramble, path: '#path-dark-bramble'},
 }
+
+let minY = 10000000000
+let maxY = -10000000000
 
 const scaleMod = function (scale, target) {
   const pos = MotionPathPlugin.getPositionOnPath(planetsOrbitsPath[target.dataset.key].raw, this.ratio);
   const animInfo = planetsAnimInfo[target.dataset.key]
+  if (target.dataset.key == "darkBramble") {
+    minY = pos.y > minY ? minY : pos.y
+    maxY = pos.y < maxY ? maxY : pos.y
+    setTimeout(() => {
+      console.log(minY, (maxY-minY) / 2 + minY ,maxY)
+    }, animInfo.duration);
+  }
   if (pos.y <= animInfo.midY) {
       // Map minY → midY   ↦   0.5 → 1
         const t = (pos.y - animInfo.minY) / (animInfo.midY - animInfo.minY);
