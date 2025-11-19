@@ -2,6 +2,10 @@
   background-color: rgb(14, 14, 14);
 }
 
+#sound-loading-txt {
+  color: white;
+}
+
 #poster {
   position: absolute;
   top: 50%;
