@@ -1,0 +1,67 @@
+:root {
+  background-color: rgb(14, 14, 14);
+}
+
+#poster {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  aspect-ratio: 1 / 1.414;
+  border: 6px white double;
+  background-color:black;
+  background-image:
+  radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+  radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+  radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px),
+  radial-gradient(rgba(255,255,255,.4), rgba(255,255,255,.1) 2px, transparent 30px);
+  background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px; 
+  background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
+  overflow: hidden;
+}
+
+#logo {
+  position: absolute;
+  top: 20%;
+  left: 25%;
+  width: 50%;
+}
+
+#sun {
+  position: absolute;
+  z-index: 100;
+  left: 15%;
+  bottom: 35%;
+  pointer-events: none;
+}
+
+.orbit-svg {
+  position: absolute;
+  pointer-events: none;
+}
+
+#svg-brittle-hollow {
+  top: 26%;
+  left: -6%;
+  width: 80%;
+  rotate: -20deg;
+}
+
+#svg-timber-hearth {
+  top: 15%;
+  left: -24%;
+  width: 120%;
+  rotate: -16deg;
+}
+
+#svg-giants-deep {
+  top: 0%;
+  left: -50%;
+  width: 160%;
+}
+
+.orbit-img {
+  cursor: pointer;
+  position: relative;
+}
