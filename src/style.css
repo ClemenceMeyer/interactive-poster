@@ -34,11 +34,16 @@
   left: 15%;
   bottom: 35%;
   pointer-events: none;
+  width: 30%;
 }
 
 .orbit-svg {
   position: absolute;
   pointer-events: none;
+}
+
+#brittle-hollow-img {
+  width: 20%;
 }
 
 #svg-brittle-hollow {
@@ -48,11 +53,19 @@
   rotate: -20deg;
 }
 
+#timber-hearth-img {
+  width: 15%;
+}
+
 #svg-timber-hearth {
   top: 15%;
   left: -24%;
   width: 120%;
   rotate: -16deg;
+}
+
+#giants-deep-img {
+  width: 25%;
 }
 
 #svg-giants-deep {
