@@ -12,6 +12,7 @@ const onDomContentLoaded = () => {
   const soundLoadingTxt = document.querySelector("#sound-loading-txt");
 
   const orbitImgs = document.querySelectorAll(".orbit-img");
+  const hoverSoundEls = document.querySelectorAll(".hover-sound");
 
   const orbitRawPathHourglassTwin = MotionPathPlugin.getRawPath(
     "#path-hourglass-twin"
@@ -134,7 +135,6 @@ const onDomContentLoaded = () => {
       const t = (pos.y - animInfo.midY) / (animInfo.maxY - animInfo.midY);
       return 1 + t * (animInfo.scaleModifier[1] - 1);
     }
-    return 1;
   };
 
   const zIndexMod = function (scale, target) {
@@ -173,23 +173,31 @@ const onDomContentLoaded = () => {
   /************** sounds **************/
 
   let soundChert = new Howl({ src: ["travelers-sound/chert.wav"], loop: true });
-  let soundRiebeck = new Howl({ src: ["travelers-sound/riebeck.wav"], loop: true });
+  let soundRiebeck = new Howl({
+    src: ["travelers-sound/riebeck.wav"],
+    loop: true,
+  });
   let soundEsker = new Howl({ src: ["travelers-sound/esker.wav"], loop: true });
-  let soundGabbro = new Howl({ src: ["travelers-sound/gabbro.wav"], loop: true });
-  let soundFeldspar = new Howl({ src: ["travelers-sound/feldspar.wav"], loop: true });
+  let soundGabbro = new Howl({
+    src: ["travelers-sound/gabbro.wav"],
+    loop: true,
+  });
+  let soundFeldspar = new Howl({
+    src: ["travelers-sound/feldspar.wav"],
+    loop: true,
+  });
 
   let planetAudios = {
-    hourglassTwins: { howl: soundChert, ready: false },
-    brittleHollow: { howl: soundRiebeck, ready: false },
-    timberHearth: { howl: soundEsker, ready: false },
-    giantsDeep: { howl: soundGabbro, ready: false },
-    darkBramble: { howl: soundFeldspar, ready: false },
+    hourglassTwins: { howl: soundChert, ready: false, playing: false },
+    brittleHollow: { howl: soundRiebeck, ready: false, playing: false },
+    timberHearth: { howl: soundEsker, ready: false, playing: false },
+    giantsDeep: { howl: soundGabbro, ready: false, playing: false },
+    darkBramble: { howl: soundFeldspar, ready: false, playing: false },
   };
 
   Object.values(planetAudios).forEach((audio) => {
     audio.howl.once("load", () => {
       audio.ready = true;
-      console.log(`${audio.howl} loaded`);
       if (
         !Object.values(planetAudios).some((audio) => {
           audio.ready === false;
@@ -215,9 +223,15 @@ const onDomContentLoaded = () => {
     });
   };
 
-  const playSound = (e) => { planetAudios[e.target.dataset.key].howl.fade(0, 1, 500); };
+  const playSound = (el) => {
+    planetAudios[el.dataset.key].howl.fade(0, 1, 500);
+    planetAudios[el.dataset.key].playing = true
+  };
 
-  const stopSound = (e) => { planetAudios[e.target.dataset.key].howl.fade(1, 0, 500); };
+  const stopSound = (el) => {
+    planetAudios[el.dataset.key].howl.fade(1, 0, 500);
+    planetAudios[el.dataset.key].playing = false
+  };
 
   /************** setup **************/
 
@@ -226,16 +240,39 @@ const onDomContentLoaded = () => {
     img.addEventListener("mousedown", pauseAnim);
   });
 
-  soundButton.addEventListener("click", () => {
-    orbitImgs.forEach((img) => {
-      if (img.dataset.key != "emberTwin" && img.dataset.key != "ashTwin") {
-        planetAudios[img.dataset.key].howl.volume(0);
-        planetAudios[img.dataset.key].howl.play();
-        img.addEventListener("mouseenter", playSound);
-        img.addEventListener("mouseleave", stopSound);
-      }
+  const activateSound = () => {
+    soundButton.removeEventListener("click", activateSound)
+    hoverSoundEls.forEach((el) => {
+      planetAudios[el.dataset.key].howl.volume(0);
+      planetAudios[el.dataset.key].howl.play();
     });
-  });
+    document.addEventListener("mousemove", checkMousePosition);
+  }
+
+  soundButton.addEventListener("click", activateSound);
+
+  const checkMousePosition = (e) => {
+    // All the elements the mouse is currently overlapping with
+    const _overlapped = document.elementsFromPoint(e.pageX, e.pageY);
+    const hoverSoundElsArray = Array.from(hoverSoundEls)
+
+    const soundElsHovering = _overlapped.filter(el => { return hoverSoundElsArray.includes(el) })
+    soundElsHovering.forEach( el => {
+      if (!planetAudios[el.dataset.key].playing) {
+        // console.log(`${el.dataset.key} start sound`)
+        playSound(el)
+      }
+    })
+
+    const soundElsNotHovering = hoverSoundElsArray.filter(el => { return !_overlapped.includes(el) })
+    soundElsNotHovering.forEach( el => {
+      if (planetAudios[el.dataset.key].playing) {
+        // console.log(`${el.dataset.key} stop sound`)
+        stopSound(el)
+      }
+    })
+  };
+  
   document.addEventListener("mouseup", resumeAnims);
 };
 
