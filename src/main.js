@@ -236,8 +236,15 @@ const onDomContentLoaded = () => {
   /************** setup **************/
 
   orbitImgs.forEach((img) => {
-    planetsTls[img.dataset.key] = createOrbitForImg(img);
-    img.addEventListener("mousedown", pauseAnim);
+    if (img.dataset.key === "ashTwin") {
+      setTimeout(() => {
+        planetsTls[img.dataset.key] = createOrbitForImg(img);
+        img.addEventListener("mousedown", pauseAnim);
+      }, 2000);
+    } else {
+      planetsTls[img.dataset.key] = createOrbitForImg(img);
+      img.addEventListener("mousedown", pauseAnim);
+    }
   });
 
   const activateSound = () => {
