@@ -8,8 +8,10 @@ import { Howl, Howler } from "howler";
 gsap.registerPlugin(MotionPathPlugin);
 
 const onDomContentLoaded = () => {
+  let canStart = false
+
   const soundButton = document.querySelector("#sound-button");
-  const soundLoadingTxt = document.querySelector("#sound-loading-txt");
+  const posterElement = document.querySelector("#poster")
 
   const orbitImgs = document.querySelectorAll(".orbit-img");
   const hoverSoundEls = document.querySelectorAll(".hover-sound");
@@ -204,7 +206,6 @@ const onDomContentLoaded = () => {
         })
       ) {
         soundButton.disabled = false;
-        soundLoadingTxt.style.display = "none";
       }
     });
   });
@@ -240,6 +241,7 @@ const onDomContentLoaded = () => {
       setTimeout(() => {
         planetsTls[img.dataset.key] = createOrbitForImg(img);
         img.addEventListener("mousedown", pauseAnim);
+        canStart = true
       }, 2000);
     } else {
       planetsTls[img.dataset.key] = createOrbitForImg(img);
@@ -247,8 +249,14 @@ const onDomContentLoaded = () => {
     }
   });
 
-  const activateSound = () => {
-    soundButton.removeEventListener("click", activateSound)
+  const start = () => {
+    if (!canStart) {
+      window.alert("Please wait a little, it's not ready yet")
+      return
+    }
+    posterElement.classList.remove("hidden")
+    soundButton.removeEventListener("click", start)
+    soundButton.remove()
     hoverSoundEls.forEach((el) => {
       planetAudios[el.dataset.key].howl.volume(0);
       planetAudios[el.dataset.key].howl.play();
@@ -256,7 +264,7 @@ const onDomContentLoaded = () => {
     document.addEventListener("mousemove", checkMousePosition);
   }
 
-  soundButton.addEventListener("click", activateSound);
+  soundButton.addEventListener("click", start);
 
   const checkMousePosition = (e) => {
     // All the elements the mouse is currently overlapping with
