@@ -215,7 +215,7 @@ const onDomContentLoaded = () => {
   });
 
   let planetAudios = {
-    hourglassTwins: { howl: soundChert, ready: false, playing: false },
+    emberTwin: { howl: soundChert, ready: false, playing: false },
     brittleHollow: { howl: soundRiebeck, ready: false, playing: false },
     timberHearth: { howl: soundEsker, ready: false, playing: false },
     giantsDeep: { howl: soundGabbro, ready: false, playing: false },
