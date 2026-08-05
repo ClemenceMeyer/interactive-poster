@@ -1,21 +1,30 @@
 // https://deep-fold.itch.io/pixel-planet-generator pixel planets
 // https://jasondyoungberg.github.io/travelers/ audio files
 
+const DEBUG = false
+
 import { gsap } from "gsap";
 import { MotionPathPlugin } from "gsap/MotionPathPlugin";
+import { CustomEase } from "gsap/CustomEase";
 import { Howl, Howler } from "howler";
 
 gsap.registerPlugin(MotionPathPlugin);
+gsap.registerPlugin(CustomEase) 
+
+
 
 const onDomContentLoaded = () => {
+
   let canStart = false
 
+  // Get HTML Elements
   const soundButton = document.querySelector("#sound-button");
   const posterElement = document.querySelector("#poster")
 
   const orbitImgs = document.querySelectorAll(".orbit-img");
   const hoverSoundEls = document.querySelectorAll(".hover-sound");
 
+  // Get orbits paths
   const orbitRawPathHourglassTwin = MotionPathPlugin.getRawPath(
     "#path-hourglass-twin"
   );
@@ -33,6 +42,23 @@ const onDomContentLoaded = () => {
   const orbitRawPathDarkBramble =
     MotionPathPlugin.getRawPath("#path-dark-bramble");
 
+  const orbitPathHourglassTwin = document.querySelector(
+    "#path-hourglass-twin"
+  );
+  const orbitPathHourglassTwins = document.querySelector(
+    "#path-hourglass-twins"
+  );
+  const orbitPathBrittleHollow = document.querySelector(
+    "#path-brittle-hollow"
+  );
+  const orbitPathTimberHearth = document.querySelector(
+    "#path-timber-hearth"
+  );
+  const orbitPathGiantsDeep =
+    document.querySelector("#path-giants-deep");
+  const orbitPathDarkBramble =
+    document.querySelector("#path-dark-bramble");
+
   /************** orbit **************/
 
   const planetsAnimInfo = {
@@ -43,6 +69,7 @@ const onDomContentLoaded = () => {
       midY: 318.375035,
       maxY: 346.85156,
       scaleModifier: [0.8, 1.4],
+      ease: "M0,0 C0.198,0 0.391,0.209 0.5,0.5 0.598,0.763 0.798,1 1,1 "
     },
     emberTwin: {
       zIndex: [20, 10],
@@ -52,6 +79,7 @@ const onDomContentLoaded = () => {
       maxY: -13.05472,
       scaleModifier: [0.98, 1.04],
       start: 0.5,
+      ease: "M0,0 C0,0 1,1 1,1"
     },
     ashTwin: {
       zIndex: [20, 10],
@@ -60,6 +88,7 @@ const onDomContentLoaded = () => {
       midY: -24.445315,
       maxY: -13.05472,
       scaleModifier: [0.98, 1.04],
+      ease: "M0,0 C0,0 1,1 1,1"
     },
     brittleHollow: {
       zIndex: [120, 40],
@@ -68,6 +97,7 @@ const onDomContentLoaded = () => {
       midY: 264.394565,
       maxY: 343.6361,
       scaleModifier: [0.5, 2],
+      ease: "M0,0 C0.198,0 0.391,0.209 0.5,0.5 0.598,0.763 0.798,1 1,1 "
     },
     timberHearth: {
       zIndex: [130, 30],
@@ -76,6 +106,7 @@ const onDomContentLoaded = () => {
       midY: 271.88205,
       maxY: 380.20982,
       scaleModifier: [0.3, 4],
+      ease: "M0,0 C0.25,0 0.414,0.209 0.5,0.5 0.579,0.77 0.754,1 1,1"
     },
     giantsDeep: {
       zIndex: [140, 20],
@@ -84,6 +115,7 @@ const onDomContentLoaded = () => {
       midY: 225.19142499999998,
       maxY: 310.62241,
       scaleModifier: [0.2, 2],
+      ease: "M0,0 C0.351,0 0.434,0.209 0.5,0.5 0.561,0.775 0.653,1 1,1"
     },
     darkBramble: {
       zIndex: [150, 10],
@@ -92,6 +124,7 @@ const onDomContentLoaded = () => {
       midY: 228.72269,
       maxY: 342.63025,
       scaleModifier: [0.1, 16],
+      ease: "M0,0 C0.45,0 0.473,0.203 0.5,0.5 0.525,0.778 0.555,1 1,1"
     },
   };
 
@@ -114,20 +147,12 @@ const onDomContentLoaded = () => {
     darkBramble: { raw: orbitRawPathDarkBramble, path: "#path-dark-bramble" },
   };
 
-  // let minY = 10000000000
-  // let maxY = -10000000000
-
   const scaleMod = function (scale, target) {
     const pos = MotionPathPlugin.getPositionOnPath(
       planetsOrbitsPath[target.dataset.key].raw,
       this.ratio
     );
     const animInfo = planetsAnimInfo[target.dataset.key];
-    // if (target.dataset.key == "darkBramble") {
-    //   minY = pos.y > minY ? minY : pos.y
-    //   maxY = pos.y < maxY ? maxY : pos.y
-    //   console.log(minY, (maxY-minY) / 2 + minY ,maxY)
-    // }
     if (pos.y <= animInfo.midY) {
       // Map minY → midY   ↦   0.5 → 1
       const t = (pos.y - animInfo.minY) / (animInfo.midY - animInfo.minY);
@@ -153,7 +178,7 @@ const onDomContentLoaded = () => {
       img,
       {
         scale: 1,
-        ease: "none",
+        ease: CustomEase.create("custom", planetsAnimInfo[img.dataset.key].ease),
         duration: planetsAnimInfo[img.dataset.key].duration,
         motionPath: {
           path: planetsOrbitsPath[img.dataset.key].path,
@@ -287,6 +312,11 @@ const onDomContentLoaded = () => {
       }
     })
   };
+
+  if (DEBUG) {
+    const paths = [orbitPathHourglassTwin, orbitPathHourglassTwins, orbitPathBrittleHollow, orbitPathTimberHearth, orbitPathGiantsDeep, orbitPathDarkBramble]
+    paths.forEach( p => p.style.stroke = "white")
+  }
   
   document.addEventListener("mouseup", resumeAnims);
 };
