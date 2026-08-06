@@ -121,3 +121,7 @@
 .hidden {
   visibility: hidden;
 }
+
+.hover-sound {
+  clip-path: circle(50%);
+}
