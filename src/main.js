@@ -15,10 +15,11 @@ gsap.registerPlugin(CustomEase)
 
 const onDomContentLoaded = () => {
 
-  let canStart = false
+  let canStart = [false, false] // 0: sound ready, 1: anim ready
 
   // Get HTML Elements
   const soundButton = document.querySelector("#sound-button");
+  const launchPage = document.querySelector("#launch-page");
   const posterElement = document.querySelector("#poster")
 
   const orbitImgs = document.querySelectorAll(".orbit-img");
@@ -230,7 +231,9 @@ const onDomContentLoaded = () => {
           audio.ready === false;
         })
       ) {
-        soundButton.disabled = false;
+        console.log(canStart)
+        canStart[0] = true
+        activateSoundButton()
       }
     });
   });
@@ -272,7 +275,8 @@ const onDomContentLoaded = () => {
       setTimeout(() => {
         planetsTls[img.dataset.key] = createOrbitForImg(img);
         img.addEventListener("mousedown", pauseAnim);
-        canStart = true
+        canStart[1] = true
+        activateSoundButton()
       }, 2000);
     } else {
       planetsTls[img.dataset.key] = createOrbitForImg(img);
@@ -281,13 +285,13 @@ const onDomContentLoaded = () => {
   });
 
   const start = () => {
-    if (!canStart) {
-      window.alert("Please wait a little, it's not ready yet")
+    if (!(canStart[0] && canStart[1])) {
+      window.alert("There seems to be an issue... Please wait a little, maybe try to refresh the page.")
       return
     }
     posterElement.classList.remove("hidden")
     soundButton.removeEventListener("click", start)
-    soundButton.remove()
+    launchPage.remove()
     hoverSoundEls.forEach((el) => {
       planetAudios[el.dataset.key].howl.volume(0);
       planetAudios[el.dataset.key].howl.play();
@@ -318,6 +322,10 @@ const onDomContentLoaded = () => {
       }
     })
   };
+
+  const activateSoundButton = () => {
+    if (canStart[0] && canStart[1]) soundButton.disabled = false
+  }
 
   if (DEBUG) {
     const paths = [orbitPathHourglassTwin, orbitPathHourglassTwins, orbitPathBrittleHollow, orbitPathTimberHearth, orbitPathGiantsDeep, orbitPathDarkBramble]
