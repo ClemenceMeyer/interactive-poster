@@ -240,6 +240,12 @@ const onDomContentLoaded = () => {
   let planetsTls = {};
 
   const pauseAnim = (e) => {
+    if (e.target.dataset.key == "emberTwin" || e.target.dataset.key == "ashTwin") {
+      planetsTls["hourglassTwins"].pause();
+      planetsTls["emberTwin"].pause();
+      planetsTls["ashTwin"].pause();
+      return
+    }
     planetsTls[e.target.dataset.key].pause();
   };
 
